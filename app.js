@@ -53,7 +53,7 @@ const mainPrompt = () => {
             case "Update an Employee role":
                 updateEmployee();
                 break;
-            case "I'm done!":
+            case "Exit":
                 endConnection();
                 break;
             default:
@@ -70,17 +70,83 @@ const toTable = (data) => {
 // Add Actions
 
 const addDepartment = () => {
+    inquirer.prompt([{
+        type: "input",
+        message: "What is the name of the Department that you'd like to add?",
+        name: "name"
+    }]).then((response) => {
+        let q = `INSERT INTO department VALUES(NULL, "${response.name}")`;
 
+        connection.query(q, function (error, results, fields) {
+            if (error) throw error;
+            // else console.log(`Successfully added ${response.name} to the departments list!`);
+        });
+
+        mainPrompt();
+    });
 }
 
 
 const addRole = () => {
 
+    inquirer.prompt([{
+            type: "input",
+            message: "What is the job title of the role that you'd like to add?",
+            name: "title",
+        },
+        {
+            type: "input",
+            message: "What is the salary for this job title?",
+            name: "salary"
+        },
+        {
+            type: "input",
+            message: "What department ID does this job title belong to?",
+            name: "department_id"
+        }
+    ]).then((response) => {
+        let q = `INSERT INTO role VALUES(NULL, "${response.title}", ${response.salary}, ${response.department_id})`;
+
+        connection.query(q, function (error, results, fields) {
+            if (error) throw error;
+            // else console.log(`Successfully added ${response.title} to the roles list!\n`);
+        });
+
+        mainPrompt();
+    });
 }
 
 
 const addEmployee = () => {
+    inquirer.prompt([{
+            type: "input",
+            message: "What is the first name of the employee?",
+            name: "first_name",
+        },
+        {
+            type: "input",
+            message: "What is the last name of the employee",
+            name: "last_name"
+        },
+        {
+            type: "input",
+            message: "What is the ID of the role for the employee",
+            name: "role_id"
+        }, {
+            type: "input",
+            message: "What is the ID of the manager for the employee",
+            name: "manager_id"
+        }
+    ]).then((response) => {
+        let q = `INSERT INTO employee VALUES(NULL, "${response.first_name}", "${response.last_name}", ${response.role_id}, ${response.manager_id})`;
 
+        connection.query(q, function (error, results, fields) {
+            if (error) throw error;
+            // else console.log(`Successfully added ${response.first_name} to the employees list!`);
+        });
+
+        mainPrompt();
+    });
 }
 
 
@@ -119,7 +185,26 @@ const viewEmployee = () => {
 // Update Actions
 
 const updateEmployee = () => {
+    inquirer.prompt([{
+            type: "input",
+            message: "What is the ID of the employee you'd like to update?",
+            name: "employee_id",
+        },
+        {
+            type: "input",
+            message: "What is the ID of the role for the employee",
+            name: "role_id"
+        }
+    ]).then((response) => {
+        let q = `UPDATE employee SET role_id=${response.role_id} WHERE id=${response.employee_id}`;
 
+        connection.query(q, function (error, results, fields) {
+            if (error) throw error;
+            // else console.log(`Successfully updated employee #${response.employee_id}!`);
+        });
+
+        mainPrompt();
+    });
 }
 
 
